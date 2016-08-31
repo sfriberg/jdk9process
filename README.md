@@ -9,3 +9,6 @@ Clone jdk9 repository and sub repositories
 Add jdk9process.jar to the classpath
 Classes use the java9.lang package, so a minor edit will be required when switching to Java 9.
 Before the first use the native library must be loaded, see example for details.
+
+## Support
+Only supports Linux currently.
