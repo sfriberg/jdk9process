@@ -11,12 +11,13 @@ fi
 JAVA_SRC_FILES="jdk/src/java.base/share/classes/java/lang/ProcessBuilder.java jdk/src/java.base/unix/classes/java/lang/ProcessEnvironment.java jdk/src/java.base/share/classes/java/lang/ProcessHandleImpl.java jdk/src/java.base/share/classes/java/lang/ProcessHandle.java jdk/src/java.base/unix/classes/java/lang/ProcessImpl.java jdk/src/java.base/share/classes/java/lang/Process.java"
 mkdir -p build/generated/java9/lang
 for src_file in ${JAVA_SRC_FILES}; do
-    cat ${JDK9_SRC}/${src_file} | sed 's/package java.lang/package java9.lang/g' | sed 's/import java.lang.Process/import java9.lang.Process/g' > build/generated/java9/lang/`basename ${src_file}`
+    cat ${JDK9_SRC}/${src_file} | sed 's/package java.lang/package java9.lang/g' | sed 's/import java.lang.Process/import java9.lang.Process/g' | sed 's/, stackSize, false/, stackSize/' | sed 's/import jdk.internal.misc./import sun.misc./' > build/generated/java9/lang/`basename ${src_file}`
 done
 
 #Compile Java
 mkdir -p build/classes
-javac src/java9/lang/*.java build/generated/java9/lang/*.java -d build/classes
+javac ${JDK9_SRC}/jdk/src/java.base/share/classes/sun/security/action/GetPropertyAction.java ${JDK9_SRC}/jdk/src/java.base/share/classes/jdk/internal/misc/JavaIOFileDescriptorAccess.java src/java9/lang/*.java build/generated/java9/lang/*.java -d build/classes
+
 
 #Generate headers
 mkdir -p build/generated/native
