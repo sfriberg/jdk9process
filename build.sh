@@ -16,7 +16,7 @@ done
 
 #Compile Java
 mkdir -p build/classes
-javac ${JDK9_SRC}/jdk/src/java.base/share/classes/sun/security/action/GetPropertyAction.java ${JDK9_SRC}/jdk/src/java.base/share/classes/jdk/internal/misc/JavaIOFileDescriptorAccess.java src/java9/lang/*.java build/generated/java9/lang/*.java -d build/classes
+javac ${JDK9_SRC}/jdk/src/java.base/share/classes/sun/security/action/GetPropertyAction.java src/java9/lang/*.java build/generated/java9/lang/*.java -d build/classes
 
 
 #Generate headers
@@ -31,7 +31,7 @@ done
 
 #Build library
 mkdir -p build/lib/java9/lang/
-gcc -fPIC -shared -I/usr/lib/jvm/java-8-oracle/include -I/usr/lib/jvm/java-8-oracle/include/linux -I${JDK9_SRC}/jdk/src/java.base/share/native/include -I${JDK9_SRC}/jdk/src/java.base/unix/native/include -I${JDK9_SRC}/jdk/src/java.base/share/native/libjava -I${JDK9_SRC}/jdk/src/java.base/unix/native/libjava build/generated/native/Process*.c -o build/lib/java9/lang/libjdk9.so
+gcc -fPIC -shared -D_GNU_SOURCE -D_REENTRANT -D_LARGEFILE64_SOURCE -fno-omit-frame-pointer -D_LITTLE_ENDIAN -DLINUX -I/usr/lib/jvm/java-8-oracle/include -I/usr/lib/jvm/java-8-oracle/include/linux -I${JDK9_SRC}/jdk/src/java.base/share/native/include -I${JDK9_SRC}/jdk/src/java.base/unix/native/include -I${JDK9_SRC}/jdk/src/java.base/share/native/libjava -I${JDK9_SRC}/jdk/src/java.base/unix/native/libjava  ${JDK9_SRC}/jdk/src/java.base/unix/native/jspawnhelper/jspawnhelper.c ${JDK9_SRC}/jdk/src/java.base/unix/native/libjava/childproc.c build/generated/native/*.c -o build/lib/java9/lang/libjdk9.so
 
 #Make jar file
-jar cf build/jdk9process.jar -C build/classes java9 -C build/lib java9/lang/libjdk9.so
+jar cf build/jdk9process.jar -C build/classes java9 -C build/classes sun -C build/lib java9/lang/libjdk9.so
