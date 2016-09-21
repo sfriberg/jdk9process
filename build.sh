@@ -8,7 +8,14 @@ if [[ ! -d ${JDK9_SRC} ]]; then
 fi
 
 #Copy Java files
-JAVA_SRC_FILES="jdk/src/java.base/share/classes/java/lang/ProcessBuilder.java jdk/src/java.base/unix/classes/java/lang/ProcessEnvironment.java jdk/src/java.base/share/classes/java/lang/ProcessHandleImpl.java jdk/src/java.base/share/classes/java/lang/ProcessHandle.java jdk/src/java.base/unix/classes/java/lang/ProcessImpl.java jdk/src/java.base/share/classes/java/lang/Process.java jdk/src/java.base/share/classes/sun/security/action/GetPropertyAction.java"
+JAVA_SRC_FILES='jdk/src/java.base/share/classes/java/lang/ProcessBuilder.java
+ jdk/src/java.base/unix/classes/java/lang/ProcessEnvironment.java
+ jdk/src/java.base/share/classes/java/lang/ProcessHandleImpl.java
+ jdk/src/java.base/share/classes/java/lang/ProcessHandle.java
+ jdk/src/java.base/unix/classes/java/lang/ProcessImpl.java
+ jdk/src/java.base/share/classes/java/lang/Process.java
+ jdk/src/java.base/share/classes/sun/security/action/GetPropertyAction.java'
+
 mkdir -p build/generated/java9/lang
 for src_file in ${JAVA_SRC_FILES}; do
     cat ${JDK9_SRC}/${src_file} | sed 's/package java.lang/package java9.lang/g' | sed 's/sun.security.action/java9.lang/g' | sed 's/import java.lang.Process/import java9.lang.Process/g' | sed 's/, stackSize, false/, stackSize/' | sed 's/import jdk.internal.misc./import sun.misc./' > build/generated/java9/lang/`basename ${src_file}`
@@ -24,7 +31,12 @@ mkdir -p build/generated/native
 (cd build/classes; ls java9/lang/Process*.class) | sed 's/\//./g' |sed 's/.class//'|xargs javah -cp build/classes -d build/generated/native
 
 #Copy C files
-C_SRC_FILES="jdk/src/java.base/unix/native/libjava/ProcessEnvironment_md.c jdk/src/java.base/linux/native/libjava/ProcessHandleImpl_linux.c jdk/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c jdk/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.h jdk/src/java.base/unix/native/libjava/ProcessImpl_md.c"
+C_SRC_FILES='jdk/src/java.base/unix/native/libjava/ProcessEnvironment_md.c
+ jdk/src/java.base/linux/native/libjava/ProcessHandleImpl_linux.c
+ jdk/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.c
+ jdk/src/java.base/unix/native/libjava/ProcessHandleImpl_unix.h
+ jdk/src/java.base/unix/native/libjava/ProcessImpl_md.c'
+
 for src_file in ${C_SRC_FILES}; do
     cat ${JDK9_SRC}/${src_file} | sed 's/java_lang/java9_lang/g' > build/generated/native/`basename ${src_file}`
 done
